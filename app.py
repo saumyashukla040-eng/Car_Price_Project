@@ -97,7 +97,6 @@ car_age = 2026 - year
 # -----------------------------
 # Prediction
 # -----------------------------
-
 if st.button("Predict Selling Price"):
 
     try:
@@ -109,33 +108,30 @@ if st.button("Predict Selling Price"):
         owner = owner_encoder.transform([owner])[0]
         brand = brand_encoder.transform([brand])[0]
 
+        # Create DataFrame
+        input_data = pd.DataFrame([{
+            'year': year,
+            'km_driven': km_driven,
+            'fuel': fuel,
+            'seller_type': seller_type,
+            'transmission': transmission,
+            'owner': owner,
+            'mileage(km/ltr/kg)': mileage,
+            'engine': engine,
+            'max_power': max_power,
+            'brand': brand,
+            'car_age': car_age
+        }])
 
-        input_data = [[
-            year,
-            km_driven,
-            fuel,
-            seller_type,
-            transmission,
-            owner,
-            mileage,
-            engine,
-            max_power,
-            brand,
-            car_age
-        ]]
+        # Scale only numerical columns
+        num_cols = ['mileage(km/ltr/kg)', 'engine', 'max_power', 'car_age', 'km_driven']
+        input_data[num_cols] = scaler.transform(input_data[num_cols])
 
-
-        # Scaling input
-        input_data = scaler.transform(input_data)
-
-
-        # Random Forest Prediction
+        # Prediction
         prediction = model.predict(input_data)
 
-
-        st.success(
-            f"Estimated Selling Price: ₹ {prediction[0]:,.0f}"
-        )
+        # Show result
+        st.success(f"Estimated Selling Price: ₹ {prediction[0]:,.0f}")
 
     except Exception as e:
         st.error(e)
