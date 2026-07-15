@@ -16,6 +16,7 @@ owner_encoder = joblib.load("owner_encoder.pkl")
 transmission_encoder = joblib.load("transmission_encoder.pkl")
 scaler = joblib.load("scaler.pkl")
 
+
 # -----------------------------
 # Page Config
 # -----------------------------
@@ -25,6 +26,7 @@ st.set_page_config(
     page_icon="🚗",
     layout="wide"
 )
+
 
 # -----------------------------
 # Dark Theme
@@ -74,7 +76,6 @@ div[data-baseweb="select"]>div{
 
 </style>
 """, unsafe_allow_html=True)
-
 # -----------------------------
 # Sidebar
 # -----------------------------
@@ -104,6 +105,7 @@ with st.sidebar:
     st.subheader("👨‍💻 Developer")
     st.write("Saumya Shukla")
 
+
 # -----------------------------
 # Main Title
 # -----------------------------
@@ -120,11 +122,13 @@ st.markdown(
 
 st.info("Enter car details to predict the estimated selling price.")
 
+
 # -----------------------------
 # User Inputs
 # -----------------------------
 
 col1, col2 = st.columns(2)
+
 
 with col1:
 
@@ -155,6 +159,7 @@ with col1:
         value=80.0
     )
 
+
 with col2:
 
     brand = st.selectbox(
@@ -183,6 +188,7 @@ with col2:
         value=50000
     )
 
+
 car_age = datetime.now().year - year
 # -----------------------------
 # Prediction
@@ -199,6 +205,7 @@ if st.button("🚗 Predict Selling Price"):
         owner = owner_encoder.transform([owner])[0]
         brand = brand_encoder.transform([brand])[0]
 
+
         # Create DataFrame
         input_data = pd.DataFrame([{
             'year': year,
@@ -214,7 +221,8 @@ if st.button("🚗 Predict Selling Price"):
             'car_age': car_age
         }])
 
-        # Scale only numerical columns
+
+        # Scale numerical columns
         num_cols = [
             'mileage(km/ltr/kg)',
             'engine',
@@ -225,15 +233,18 @@ if st.button("🚗 Predict Selling Price"):
 
         input_data[num_cols] = scaler.transform(input_data[num_cols])
 
+
         # Prediction
         prediction = model.predict(input_data)
-        
+
+
         # Show Result
         st.markdown("---")
-    
+
         st.success("✅ Prediction Completed Successfully!")
 
         st.write(f"₹ {prediction[0]:,.0f}")
+
 
     except Exception as e:
         st.error(f"Error: {e}")
